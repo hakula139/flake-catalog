@@ -1,0 +1,40 @@
+name: Tag Release
+
+on:
+  push:
+    tags: ['v[0-9]+.*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  tagged-ci:
+    name: Tagged CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    permissions:
+      actions: read
+
+    steps:
+      - name: Wait for CI
+        uses: hakula139/devkit/.github/actions/tagged-ci@v3
+
+  publish:
+    name: Publish GitHub Release
+    needs: [tagged-ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Publish release
+        uses: hakula139/devkit/.github/actions/publish-release@v3

@@ -1,0 +1,17 @@
+Cachix
+devkit
+direnv
+Hakula
+ListenBrainz
+nixfmt
+nixos
+nixpkgs
+pkgs
+scrobbler
+shellcheck
+shfmt
+stdenv
+substituter
+substituters
+WakaTime
+zstd

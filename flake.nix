@@ -1,0 +1,115 @@
+# ==================================================================================================
+# flake-catalog
+# ==================================================================================================
+
+{
+  description = "Versioned Nix flake catalog for Hakula's projects";
+
+  nixConfig = {
+    extra-substituters = [ "https://hakula.cachix.org" ];
+    extra-trusted-public-keys = [
+      "hakula.cachix.org-1:7zwB3fhMfReHdOjh6DmnaLXgqbPDBcojvN9F+osZw0k="
+    ];
+  };
+
+  # ------------------------------------------------------------------------------------------------
+  # Inputs
+  # ------------------------------------------------------------------------------------------------
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    devkit = {
+      url = "github:hakula139/devkit/v3";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    activity-report.url = "github:hakula139/activity-report/v0.2.0";
+    agent-project-move.url = "github:hakula139/agent-project-move/v0.3.0";
+    listenbrainz-scrobbler.url = "github:hakula139/listenbrainz-scrobbler/v0.3.0";
+    oxide-code.url = "github:hakula139/oxide-code/v0.1.0-alpha.11";
+    plugins.url = "github:hakula139/plugins";
+    wakatime-cli.url = "github:hakula139/wakatime-cli/v2.28.4-hakula.1";
+  };
+
+  # ------------------------------------------------------------------------------------------------
+  # Outputs
+  # ------------------------------------------------------------------------------------------------
+  outputs =
+    {
+      self,
+      nixpkgs,
+      devkit,
+      activity-report,
+      agent-project-move,
+      listenbrainz-scrobbler,
+      oxide-code,
+      plugins,
+      wakatime-cli,
+      ...
+    }@inputs:
+    {
+      homeModules = {
+        activity-report = activity-report.homeModules.default;
+        agent-project-move = agent-project-move.homeModules.default;
+        listenbrainz-scrobbler = listenbrainz-scrobbler.homeModules.default;
+        oxide-code = oxide-code.homeModules.default;
+      };
+
+      lib.skills = plugins.lib.skills;
+
+      overlays.default = final: _: self.packages.${final.stdenv.hostPlatform.system};
+    }
+    // devkit.lib.eachSystem [ "x86_64-linux" "aarch64-darwin" ] (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        dk = devkit.lib.mkLib pkgs;
+
+        preCommit = dk.preCommit {
+          src = ./.;
+          hooks = {
+            prettier.enable = true;
+            shellcheck.enable = true;
+            shfmt.enable = true;
+          };
+        };
+      in
+      {
+        # ------------------------------------------------------------------------------------------
+        # Dev Shell
+        # ------------------------------------------------------------------------------------------
+        devShells.default = pkgs.mkShell {
+          name = "flake-catalog-dev";
+          inputsFrom = [ preCommit ];
+        };
+
+        # ------------------------------------------------------------------------------------------
+        # Packages
+        # ------------------------------------------------------------------------------------------
+        packages = {
+          activity-report = activity-report.packages.${system}.activity-report;
+          agent-project-move = agent-project-move.packages.${system}.agent-project-move;
+          oxide-code = oxide-code.packages.${system}.oxide-code;
+          wakatime-cli = wakatime-cli.packages.${system}.wakatime-cli;
+        }
+        // nixpkgs.lib.optionalAttrs (system == "aarch64-darwin") {
+          listenbrainz-scrobbler = listenbrainz-scrobbler.packages.${system}.listenbrainz-scrobbler;
+        };
+
+        # ------------------------------------------------------------------------------------------
+        # Checks
+        # ------------------------------------------------------------------------------------------
+        checks = self.packages.${system} // import ./nix/checks.nix { inherit self inputs pkgs; };
+
+        # ------------------------------------------------------------------------------------------
+        # Formatter
+        # ------------------------------------------------------------------------------------------
+        formatter = pkgs.nixfmt-tree;
+      }
+    );
+}
