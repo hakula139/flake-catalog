@@ -6,16 +6,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1794679066,
-        "narHash": "sha256-ee2J59C7qwEpU2FRvWIhU0FryLTMe0T+PoGvW1PDOlw=",
+        "lastModified": 1794743067,
+        "narHash": "sha256-7KoRLK/rSD6U51G4/IPoCSBn0p+Ogt9pELxagFmCM+o=",
         "owner": "hakula139",
         "repo": "activity-report",
-        "rev": "adb12dd8032ad4390a6e3bdcb6b39c41274053a9",
+        "rev": "c5908bce845601ba7900cf32fabad657264896a0",
         "type": "github"
       },
       "original": {
         "owner": "hakula139",
-        "ref": "v0.2.0",
+        "ref": "v0.2.1",
         "repo": "activity-report",
         "type": "github"
       }
