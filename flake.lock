@@ -145,11 +145,11 @@
         "nixpkgs-unstable": "nixpkgs-unstable_5"
       },
       "locked": {
-        "lastModified": 1794484827,
-        "narHash": "sha256-15GbflneXF9BZkigED6OELip679wev31hilQbkpq0lY=",
+        "lastModified": 1794687934,
+        "narHash": "sha256-1KfBNSwUXQl4qT9bTcXfli3Gllq/Ah/sqEerjaNbZ+0=",
         "owner": "hakula139",
         "repo": "devkit",
-        "rev": "733c20a1b280137d103eb66cab4cccfa89c9bb43",
+        "rev": "f5a8dab0e3dc8662485c35d7c8f534d7440dd878",
         "type": "github"
       },
       "original": {
@@ -763,11 +763,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1794681866,
-        "narHash": "sha256-+6pkRXg6JF6RcCqfTcPLJ1AleQgFTVND6rTge8PxPy0=",
+        "lastModified": 1794730348,
+        "narHash": "sha256-JgZG2z+V+0CH0akYAsDTeX+u0D8x08V3VECtxs/XpAY=",
         "owner": "hakula139",
         "repo": "plugins",
-        "rev": "4f5c5202b89967c2fc8a6ed24a4d03e72f1a6569",
+        "rev": "ab1f592d08c438c786da2eac60823512b6b802e6",
         "type": "github"
       },
       "original": {
