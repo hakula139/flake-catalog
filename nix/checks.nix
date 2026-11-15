@@ -107,10 +107,7 @@ let
 
   installed = map (package: package.drvPath) catalog.home.packages;
   skillSource = name: toString catalog.home.file.".agents/skills/${name}".source;
-  overlay = self.overlays.default {
-    stdenv.hostPlatform = { inherit system; };
-    callPackage = _: _: throw "catalog overlay reconstructed a package";
-  } { };
+  overlay = pkgs.extend self.overlays.default;
 in
 {
   overlay =
@@ -118,7 +115,7 @@ in
       packagePaths packages == packagePaths upstreamPackages
     ) "catalog package identity differs from upstream";
     assert lib.assertMsg (
-      packagePaths overlay == packagePaths upstreamPackages
+      packagePaths (builtins.intersectAttrs packages overlay) == packagePaths upstreamPackages
     ) "catalog overlay package identity differs from upstream";
     pkgs.emptyFile;
 

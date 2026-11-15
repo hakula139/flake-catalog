@@ -62,7 +62,7 @@
 
       lib.skills = plugins.lib.skills;
 
-      overlays.default = final: _: self.packages.${final.stdenv.hostPlatform.system};
+      overlays.default = _: prev: self.packages.${prev.stdenv.hostPlatform.system};
     }
     // devkit.lib.eachSystem [ "x86_64-linux" "aarch64-darwin" ] (
       system:
