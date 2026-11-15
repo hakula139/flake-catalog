@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-11-18
+
+### Breaking changes
+
+- Update Agent Project Move to v0.5.0, which requires v0.4.0 or newer on both hosts for OMP blob bundles and removes the standalone `export-blobs` subcommand in favor of direct attachment recovery in the skill ([#8](https://github.com/hakula139/flake-catalog/pull/8), [#11](https://github.com/hakula139/flake-catalog/pull/11)).
+
+### Added
+
+- Export Activity Report, Agent Project Move, Oxide Code, and WakaTime CLI packages and checks on `aarch64-linux` ([#10](https://github.com/hakula139/flake-catalog/pull/10)).
+- Update Agent Project Move to v0.5.0 with `move --session-ids` and `move --exact`, ListenBrainz Scrobbler to v0.4.1 with `overlays.default` on macOS, Activity Report to v0.2.2 with single-digit date components, Oxide Code to v0.1.0-alpha.12, WakaTime CLI to v2.28.4-hakula.3, and Plugins to `afa5a92` ([#9](https://github.com/hakula139/flake-catalog/pull/9), [#11](https://github.com/hakula139/flake-catalog/pull/11)).
+
+### Changed
+
+- Track upstream default branches in `flake.nix` while locking exact revisions in `flake.lock` so Renovate refreshes and auto-merges lock updates directly ([#11](https://github.com/hakula139/flake-catalog/pull/11)).
+- Reuse each upstream flake's locked native derivation by default across all four Home Manager modules (`activity-report`, `agent-project-move`, `listenbrainz-scrobbler`, and `oxide-code`), removing the need to pass `package` explicitly ([#11](https://github.com/hakula139/flake-catalog/pull/11)).
+
+### Fixed
+
+- Guard the catalog overlay on static, musl, and cross package sets so auxiliary nixpkgs evaluations keep their native packages. Skip Home Manager's `oxide-code` configuration check when the builder cannot execute the cross-compiled binary ([#10](https://github.com/hakula139/flake-catalog/pull/10), [#11](https://github.com/hakula139/flake-catalog/pull/11)).
+- Preserve Codex `guardian_review_feedback` rows and SQLite BLOBs across Agent Project Move transfers, align Activity Report local midnight boundaries across daylight-saving changes, announce initial ListenBrainz playback in a single request, and buffer session-based WakaTime AI heartbeats ([#9](https://github.com/hakula139/flake-catalog/pull/9), [#11](https://github.com/hakula139/flake-catalog/pull/11)).
+
+[0.2.0]: https://github.com/hakula139/flake-catalog/compare/v0.1.2...v0.2.0
+
 ## [0.1.2] - 2026-11-15
 
 ### Changed

@@ -39,17 +39,14 @@ environment.systemPackages = [
 ];
 ```
 
-For Home Manager, import the module and select its catalog package. Activity Report and Agent Project Move otherwise rebuild their default package with the host's package set.
+Each Home Manager module selects its locked upstream package by default on supported native platforms.
 
 ```nix
 imports = [ inputs.flake-catalog.homeModules.activity-report ];
-programs.activity-report = {
-  enable = true;
-  package = inputs.flake-catalog.packages.${pkgs.stdenv.hostPlatform.system}.activity-report;
-};
+programs.activity-report.enable = true;
 ```
 
-Alternatively, add `inputs.flake-catalog.overlays.default` to `nixpkgs.overlays` and select `pkgs.activity-report`. Install individual skill sources through `home.file`:
+To access catalog packages through `pkgs`, add `inputs.flake-catalog.overlays.default` to `nixpkgs.overlays` and select `pkgs.activity-report`. Install individual skill sources through `home.file`:
 
 ```nix
 home.file.".agents/skills/review".source = inputs.flake-catalog.lib.skills.review;
