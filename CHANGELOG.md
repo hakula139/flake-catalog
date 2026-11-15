@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-11-15
+
+### Fixed
+
+- Fix infinite recursion when applying the catalog overlay to nixpkgs, allowing consumer development shells to evaluate.
+
+[0.1.2]: https://github.com/hakula139/flake-catalog/compare/v0.1.1...v0.1.2
+
 ## [0.1.1] - 2026-11-15
 
 ### Fixed
