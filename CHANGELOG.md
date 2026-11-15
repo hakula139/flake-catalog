@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [0.1.2] - 2026-11-15
 
+### Changed
+
+- Refresh Devkit and bundled agent skills.
+
 ### Fixed
 
 - Fix infinite recursion when applying the catalog overlay to nixpkgs, allowing consumer development shells to evaluate.
