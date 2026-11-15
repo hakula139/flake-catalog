@@ -9,23 +9,25 @@ Versioned Nix flake catalog for Hakula's projects. Packages are the upstream der
 
 Packages use `packages.<system>.<name>`. Original Home Manager modules use `homeModules.<name>`.
 
-| Name                     | x86_64-linux | aarch64-darwin | Home Manager |
-| ------------------------ | ------------ | -------------- | ------------ |
-| `activity-report`        | Yes          | Yes            | Yes          |
-| `agent-project-move`     | Yes          | Yes            | Yes          |
-| `listenbrainz-scrobbler` |              | Yes            | Yes          |
-| `oxide-code`             | Yes          | Yes            | Yes          |
-| `wakatime-cli`           | Yes          | Yes            |              |
+| Name                                               | x86_64-linux | aarch64-darwin | Home Manager |
+| -------------------------------------------------- | ------------ | -------------- | ------------ |
+| [`activity-report`][activity-report]               | Yes          | Yes            | Yes          |
+| [`agent-project-move`][agent-project-move]         | Yes          | Yes            | Yes          |
+| [`listenbrainz-scrobbler`][listenbrainz-scrobbler] |              | Yes            | Darwin       |
+| [`oxide-code`][oxide-code]                         | Yes          | Yes            | Yes          |
+| [`wakatime-cli`][wakatime-cli]                     | Yes          | Yes            |              |
 
 `lib.skills` exposes [Plugins](https://github.com/hakula139/plugins)' skill sources. `overlays.default` aliases those packages in the consumer's package set.
 
 ## Consume
 
-Add the input and commit the resulting lock:
+Pin a published snapshot tag or a reviewed commit, and commit the resulting lock:
 
 ```nix
-inputs.flake-catalog.url = "github:hakula139/flake-catalog";
+inputs.flake-catalog.url = "github:hakula139/flake-catalog/0c3746b2e13e82fe843eee550bf6847e01c8ca5c";
 ```
+
+Keep the catalog's project inputs and transitive dependencies unchanged, without consumer `follows` overrides.
 
 Select packages directly:
 
@@ -83,3 +85,9 @@ See devkit's shared [CI](https://github.com/hakula139/devkit/blob/v3/docs/ci.md)
 ## License
 
 Copyright (c) 2026 [Hakula](https://hakula.xyz). Licensed under the [MIT License](LICENSE).
+
+[activity-report]: https://github.com/hakula139/activity-report
+[agent-project-move]: https://github.com/hakula139/agent-project-move
+[listenbrainz-scrobbler]: https://github.com/hakula139/listenbrainz-scrobbler
+[oxide-code]: https://github.com/hakula139/oxide-code
+[wakatime-cli]: https://github.com/hakula139/wakatime-cli
