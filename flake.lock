@@ -816,16 +816,16 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1794683231,
-        "narHash": "sha256-EDxLASsXd7HaFytltR2m4bHl9D/e9yID3U0L4Tag9a4=",
+        "lastModified": 1794747151,
+        "narHash": "sha256-xukEbGdH53JY3J007iFSRX+z7X2ZCrGNEU0v+bKBX6I=",
         "owner": "hakula139",
         "repo": "wakatime-cli",
-        "rev": "ea8c76045ac7707e52eb4dfe8b7be09a929c78c8",
+        "rev": "59c374f9c1b84df3cd9949901263992b2d094b50",
         "type": "github"
       },
       "original": {
         "owner": "hakula139",
-        "ref": "v2.28.4-hakula.1",
+        "ref": "v2.28.4-hakula.2",
         "repo": "wakatime-cli",
         "type": "github"
       }
