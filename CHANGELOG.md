@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-- Refresh Devkit and bundled agent skills.
+- Make Dream proposals resumable across sessions and refresh issue-title and Nushell guidance.
 
 ### Fixed
 
