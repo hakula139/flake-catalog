@@ -26,16 +26,16 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1794682090,
-        "narHash": "sha256-48Jnfj0kbkWpueYchxkEchYA9pMIM/P7b3ej4R0cTy0=",
+        "lastModified": 1794739952,
+        "narHash": "sha256-I6LOOjjd3AvJiOgDcwFmdMTpS+hWu56XZEFpfbQ041A=",
         "owner": "hakula139",
         "repo": "agent-project-move",
-        "rev": "c7611786a70bfcafc56abe5013487881c1827e3d",
+        "rev": "e87e2a5c5b850a55e44bc3adf1f93ffea86121e6",
         "type": "github"
       },
       "original": {
         "owner": "hakula139",
-        "ref": "v0.3.0",
+        "ref": "v0.4.0",
         "repo": "agent-project-move",
         "type": "github"
       }
