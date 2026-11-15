@@ -21,13 +21,15 @@ Packages use `packages.<system>.<name>`. Original Home Manager modules use `home
 
 ## Consume
 
-Pin a published snapshot tag or a reviewed commit, and commit the resulting lock:
+Add the input and commit the resulting lock:
 
 ```nix
-inputs.flake-catalog.url = "github:hakula139/flake-catalog/0c3746b2e13e82fe843eee550bf6847e01c8ca5c";
+inputs.flake-catalog.url = "github:hakula139/flake-catalog";
 ```
 
-Keep the catalog's project inputs and transitive dependencies unchanged, without consumer `follows` overrides.
+Append an existing release tag to the input URL to pin a catalog version.
+
+Keep the catalog's project inputs and transitive dependencies unchanged, without consumer `follows` overrides. Overriding them changes the tested derivations.
 
 Select packages directly:
 
