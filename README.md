@@ -9,13 +9,13 @@ Versioned Nix flake catalog for Hakula's projects. Packages are the upstream der
 
 Packages use `packages.<system>.<name>`. Original Home Manager modules use `homeModules.<name>`.
 
-| Name                                               | x86_64-linux | aarch64-darwin | Home Manager |
-| -------------------------------------------------- | ------------ | -------------- | ------------ |
-| [`activity-report`][activity-report]               | Yes          | Yes            | Yes          |
-| [`agent-project-move`][agent-project-move]         | Yes          | Yes            | Yes          |
-| [`listenbrainz-scrobbler`][listenbrainz-scrobbler] |              | Yes            | Darwin       |
-| [`oxide-code`][oxide-code]                         | Yes          | Yes            | Yes          |
-| [`wakatime-cli`][wakatime-cli]                     | Yes          | Yes            |              |
+| Name                                               | aarch64-darwin | aarch64-linux | x86_64-linux | Home Manager |
+| -------------------------------------------------- | -------------- | ------------- | ------------ | ------------ |
+| [`activity-report`][activity-report]               | Yes            | Yes           | Yes          | Yes          |
+| [`agent-project-move`][agent-project-move]         | Yes            | Yes           | Yes          | Yes          |
+| [`listenbrainz-scrobbler`][listenbrainz-scrobbler] | Yes            |               |              | Darwin       |
+| [`oxide-code`][oxide-code]                         | Yes            | Yes           | Yes          | Yes          |
+| [`wakatime-cli`][wakatime-cli]                     | Yes            | Yes           | Yes          |              |
 
 `lib.skills` exposes [Plugins](https://github.com/hakula139/plugins)' skill sources. `overlays.default` aliases those packages in the consumer's package set.
 

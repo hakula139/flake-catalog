@@ -3,16 +3,19 @@
 # ==================================================================================================
 
 {
-  self,
-  inputs,
   pkgs,
+  inputs,
+  self,
 }:
 
 let
   inherit (pkgs) lib;
-  inherit (pkgs.stdenv.hostPlatform) system;
   inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) system;
 
+  # ------------------------------------------------------------------------------------------------
+  # Packages and Overlay
+  # ------------------------------------------------------------------------------------------------
   packages = self.packages.${system};
   upstreamPackages = {
     inherit (inputs.activity-report.packages.${system}) activity-report;
@@ -30,6 +33,26 @@ let
     }
   );
 
+  crossTarget =
+    packageSet:
+    if system == "aarch64-linux" then
+      packageSet.pkgsCross.gnu64
+    else
+      packageSet.pkgsCross.aarch64-multiplatform;
+
+  crossPackagePaths =
+    packageSet:
+    packagePaths {
+      inherit ((crossTarget packageSet).pkgsStatic) hello;
+    };
+
+  overlay = pkgs.extend self.overlays.default;
+
+  # ------------------------------------------------------------------------------------------------
+  # Home Manager Evaluation
+  # ------------------------------------------------------------------------------------------------
+  username = "catalog-test";
+
   moduleNames = [
     "activity-report"
     "agent-project-move"
@@ -37,64 +60,55 @@ let
   ]
   ++ lib.optional isDarwin "listenbrainz-scrobbler";
 
-  settings = {
-    activity-report.labels.default = [ "work" ];
-    oxide-code.client.effort = "high";
+  homeFixture = skills: {
+    home = {
+      inherit username;
+      homeDirectory = if isDarwin then "/Users/${username}" else "/home/${username}";
+      stateVersion = "26.05";
+      file = lib.mapAttrs' (
+        name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
+      ) skills;
+    };
+
+    programs = {
+      activity-report = {
+        enable = true;
+        package = upstreamPackages.activity-report;
+        settings = {
+          labels.default = [ "work" ];
+        };
+      };
+
+      agent-project-move = {
+        enable = true;
+        package = upstreamPackages.agent-project-move;
+      };
+
+      oxide-code = {
+        enable = true;
+        package = upstreamPackages.oxide-code;
+        settings.client.effort = "high";
+        context = "Use the project instructions.\n";
+      };
+    };
+
+    services = lib.optionalAttrs isDarwin {
+      listenbrainz-scrobbler = {
+        enable = true;
+        package = upstreamPackages.listenbrainz-scrobbler;
+      };
+    };
   };
 
-  # Reconstructing either Nushell package with the host's zstd must change its derivation.
-  consumerPkgs = pkgs.extend (_: prev: { zstd = prev.hello; });
-
   evalHome =
-    modules: skills:
+    packageSet: modules: skills:
     (inputs.home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
-      extraSpecialArgs.pkgs = consumerPkgs;
       modules = modules ++ [
-        {
-          home = {
-            username = "catalog-test";
-            homeDirectory = if isDarwin then "/Users/catalog-test" else "/home/catalog-test";
-            stateVersion = "26.05";
-            file = lib.mapAttrs' (
-              name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
-            ) skills;
-          };
-
-          programs = {
-            activity-report = {
-              enable = true;
-              package = upstreamPackages.activity-report;
-              settings = settings.activity-report;
-            };
-
-            agent-project-move = {
-              enable = true;
-              package = upstreamPackages.agent-project-move;
-            };
-
-            oxide-code = {
-              enable = true;
-              package = upstreamPackages.oxide-code;
-              settings = settings.oxide-code;
-              context = "Use the project instructions.\n";
-            };
-          };
-
-          services = lib.optionalAttrs isDarwin {
-            listenbrainz-scrobbler = {
-              enable = true;
-              package = upstreamPackages.listenbrainz-scrobbler;
-            };
-          };
-        }
+        (homeFixture skills)
       ];
+      # Reconstructing either Nushell package with the host's zstd must change its derivation.
+      pkgs = packageSet.extend (_: prev: { zstd = prev.hello; });
     }).config;
-
-  catalog = evalHome (map (name: self.homeModules.${name}) moduleNames) self.lib.skills;
-  upstream = evalHome (map (
-    name: inputs.${name}.homeModules.default
-  ) moduleNames) inputs.plugins.lib.skills;
 
   snapshot = config: {
     packages = map (package: package.drvPath) config.home.packages;
@@ -105,11 +119,18 @@ let
     launchd = lib.optionalAttrs isDarwin config.launchd.agents;
   };
 
+  catalog = evalHome overlay (map (name: self.homeModules.${name}) moduleNames) self.lib.skills;
+  upstream = evalHome pkgs (map (
+    name: inputs.${name}.homeModules.default
+  ) moduleNames) inputs.plugins.lib.skills;
+
   installed = map (package: package.drvPath) catalog.home.packages;
   skillSource = name: toString catalog.home.file.".agents/skills/${name}".source;
-  overlay = pkgs.extend self.overlays.default;
 in
 {
+  # ------------------------------------------------------------------------------------------------
+  # Overlay Check
+  # ------------------------------------------------------------------------------------------------
   overlay =
     assert lib.assertMsg (
       packagePaths packages == packagePaths upstreamPackages
@@ -117,8 +138,23 @@ in
     assert lib.assertMsg (
       packagePaths (builtins.intersectAttrs packages overlay) == packagePaths upstreamPackages
     ) "catalog overlay package identity differs from upstream";
+    assert lib.assertMsg (
+      self.overlays.default null pkgs.pkgsStatic == { }
+    ) "catalog overlay modified pkgsStatic";
+    assert lib.assertMsg (
+      lib.optionalAttrs pkgs.stdenv.isLinux (self.overlays.default null pkgs.pkgsMusl) == { }
+    ) "catalog overlay modified pkgsMusl";
+    assert lib.assertMsg (
+      self.overlays.default null (crossTarget pkgs) == { }
+    ) "catalog overlay modified pkgsCross";
+    assert lib.assertMsg (
+      crossPackagePaths overlay == crossPackagePaths pkgs
+    ) "catalog overlay cross-package identity differs from nixpkgs";
     pkgs.emptyFile;
 
+  # ------------------------------------------------------------------------------------------------
+  # Home Manager Check
+  # ------------------------------------------------------------------------------------------------
   home-manager =
     assert lib.assertMsg (
       snapshot catalog == snapshot upstream
@@ -127,10 +163,10 @@ in
       name: builtins.elem upstreamPackages.${name}.drvPath installed
     ) moduleNames) "Home Manager did not install the selected upstream packages";
     assert lib.assertMsg (
-      skillSource "activity-report" == "${upstreamPackages.activity-report}/share/skills/activity-report"
-      &&
-        skillSource "agent-project-move"
-        == "${upstreamPackages.agent-project-move}/share/skills/agent-project-move"
+      lib.all (name: skillSource name == "${upstreamPackages.${name}}/share/skills/${name}") [
+        "activity-report"
+        "agent-project-move"
+      ]
       && lib.all (name: skillSource name == toString inputs.plugins.lib.skills.${name}) (
         builtins.attrNames inputs.plugins.lib.skills
       )

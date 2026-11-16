@@ -3,10 +3,12 @@ devkit
 direnv
 Hakula
 ListenBrainz
+multiplatform
 nixfmt
 nixos
 nixpkgs
 pkgs
+prek
 scrobbler
 shellcheck
 shfmt
@@ -14,4 +16,5 @@ stdenv
 substituter
 substituters
 WakaTime
+worktree
 zstd
