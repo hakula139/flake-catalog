@@ -73,30 +73,22 @@ let
     programs = {
       activity-report = {
         enable = true;
-        package = upstreamPackages.activity-report;
         settings = {
           labels.default = [ "work" ];
         };
       };
 
-      agent-project-move = {
-        enable = true;
-        package = upstreamPackages.agent-project-move;
-      };
+      agent-project-move.enable = true;
 
       oxide-code = {
         enable = true;
-        package = upstreamPackages.oxide-code;
         settings.client.effort = "high";
         context = "Use the project instructions.\n";
       };
     };
 
     services = lib.optionalAttrs isDarwin {
-      listenbrainz-scrobbler = {
-        enable = true;
-        package = upstreamPackages.listenbrainz-scrobbler;
-      };
+      listenbrainz-scrobbler.enable = true;
     };
   };
 
@@ -161,7 +153,7 @@ in
     ) "catalog Home Manager configuration differs from direct upstream imports";
     assert lib.assertMsg (lib.all (
       name: builtins.elem upstreamPackages.${name}.drvPath installed
-    ) moduleNames) "Home Manager did not install the selected upstream packages";
+    ) moduleNames) "Home Manager defaults did not install the locked upstream packages";
     assert lib.assertMsg (
       lib.all (name: skillSource name == "${upstreamPackages.${name}}/share/skills/${name}") [
         "activity-report"

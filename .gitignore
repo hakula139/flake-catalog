@@ -6,5 +6,6 @@
 
 # Assistant local state
 **/.agents/plans/
+**/.claude/plans/
 **/.claude/agent-memory-local/
 **/.claude/settings.local.json
