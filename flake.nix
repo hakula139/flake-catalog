@@ -31,7 +31,7 @@
     activity-report.url = "github:hakula139/activity-report/v0.2.1";
     agent-project-move.url = "github:hakula139/agent-project-move/v0.4.0";
     listenbrainz-scrobbler.url = "github:hakula139/listenbrainz-scrobbler/v0.3.0";
-    oxide-code.url = "github:hakula139/oxide-code/v0.1.0-alpha.11";
+    oxide-code.url = "github:hakula139/oxide-code/v0.1.0-alpha.12";
     plugins.url = "github:hakula139/plugins";
     wakatime-cli.url = "github:hakula139/wakatime-cli/v2.28.4-hakula.2";
   };
