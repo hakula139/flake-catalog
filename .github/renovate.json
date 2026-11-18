@@ -1,4 +1,23 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>hakula139/devkit#v3"]
+  "extends": ["github>hakula139/devkit#v3"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/)flake\\.nix$/"],
+      "matchStrings": [
+        "github:hakula139/(?<depName>(?!devkit\\b)[^/\"]+)/(?<currentValue>v[^\"\\s]+)"
+      ],
+      "depNameTemplate": "hakula139/{{depName}}",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "loose"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["custom.regex"],
+      "matchFileNames": ["flake.nix"],
+      "automerge": false
+    }
+  ]
 }

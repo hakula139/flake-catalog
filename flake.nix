@@ -62,9 +62,16 @@
 
       lib.skills = plugins.lib.skills;
 
-      overlays.default = _: prev: self.packages.${prev.stdenv.hostPlatform.system};
+      overlays.default =
+        _: prev:
+        nixpkgs.lib.optionalAttrs (
+          prev.stdenv.buildPlatform == prev.stdenv.hostPlatform
+          && prev.stdenv.hostPlatform == prev.stdenv.targetPlatform
+          && !(prev.stdenv.hostPlatform.isStatic or false)
+          && !(prev.stdenv.hostPlatform.isMusl or false)
+        ) (self.packages.${prev.stdenv.hostPlatform.system} or { });
     }
-    // devkit.lib.eachSystem [ "x86_64-linux" "aarch64-darwin" ] (
+    // devkit.lib.eachSystem devkit.lib.systems (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -104,7 +111,7 @@
         # ------------------------------------------------------------------------------------------
         # Checks
         # ------------------------------------------------------------------------------------------
-        checks = self.packages.${system} // import ./nix/checks.nix { inherit self inputs pkgs; };
+        checks = self.packages.${system} // import ./nix/checks.nix { inherit pkgs inputs self; };
 
         # ------------------------------------------------------------------------------------------
         # Formatter
