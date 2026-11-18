@@ -5,9 +5,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": ["/(^|/)flake\\.nix$/"],
-      "matchStrings": [
-        "github:hakula139/(?<depName>(?!devkit\\b)[^/\"]+)/(?<currentValue>v[^\"\\s]+)"
-      ],
+      "matchStrings": ["github:hakula139/(?<depName>[^/\"]+)/(?<currentValue>v\\d+\\.[^\"\\s]+)"],
       "depNameTemplate": "hakula139/{{depName}}",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "loose"
